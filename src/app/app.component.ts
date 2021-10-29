@@ -3,6 +3,7 @@ import { SharedService } from './shared.service';
 import { NgModule } from '@angular/core';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { NgForm } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 
 
@@ -20,7 +21,8 @@ export class AppComponent {
   isShown: boolean = true ;
   @ViewChild('inputName') inputName:any; 
 
-  constructor(private Service: SharedService) {
+  constructor(private Service: SharedService,
+    private toaster:ToastrService) {
     this.UsersList = new Array<any>()
    }
 
@@ -43,12 +45,14 @@ export class AppComponent {
       "userMobile": form.value.userMobile
     }
     this.Service.postUser(this.postdata).subscribe(res => {
-    this.inputUserName = "Hello " + form.value.userName + " !!"
-    this.refreshUserList();
-    },
+        this.toaster.success("Submitted successfully")
+        this.inputUserName = "Hello " + form.value.userName + " !!"
+        this.refreshUserList();
+        form.reset();
+        },
     err => 
     {
-      console.log(err);
+      this.toaster.error("Server not responding...","Something went wrong !!")
     });
     
   }
